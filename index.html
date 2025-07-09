@@ -17,10 +17,18 @@
             scroll-behavior: smooth;
             overflow-x: hidden;
             color: white;
-            background-color: #0f172a;
-            background-image: linear-gradient(to bottom right, #1e3a8a, #4c1d95);
-            background-attachment: fixed;
-            background-size: cover;
+            /* --- FIXED: Changed background to solid color for canvas --- */
+            background-color: #0a0a0a;
+        }
+
+        /* --- NEW: Style for the canvas background --- */
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
         
         .hero-text {
@@ -142,7 +150,6 @@
             transition: transform 0.1s ease;
             transform-style: preserve-3d;
         }
-        /* --- NEW: Card Glow Style --- */
         .card-glow {
             box-shadow: 0 0 20px rgba(165, 180, 252, 0.3);
             transition: box-shadow 0.3s ease-in-out;
@@ -153,6 +160,9 @@
     </style>
 </head>
 <body class="relative">
+    <!-- --- NEW: Canvas for particle background --- -->
+    <canvas id="canvas"></canvas>
+
     <!-- First Section with GSAP Animation and Spline Robot -->
     <section id="section1" class="relative overflow-hidden">
         
@@ -229,7 +239,6 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                 <!-- Card 1 -->
                 <div id="it-card-1" class="card-3d-container">
-                    <!-- --- FIXED: Replaced shadow-2xl with card-glow --- -->
                     <div class="card-3d bg-white/10 p-6 rounded-2xl card-glow backdrop-blur-lg border border-white/20">
                         <img src="https://placehold.co/600x400/1e3a8a/ffffff?text=Feature+1" alt="Feature 1 Screenshot" class="rounded-lg mb-4 w-full h-auto">
                         <h3 class="text-2xl font-semibold mb-2">Dashboard Analytics</h3>
@@ -408,7 +417,6 @@
                     }
                 });
                 
-                // --- NEW: Typewriter for "My IT Side" ---
                 const itTitleEl = document.getElementById('it-title');
                 const itOriginalText = "My IT Side";
                 itTitleEl.innerHTML = cursor; 
@@ -440,7 +448,6 @@
                         gsap.from("#project-left", { scrollTrigger: { trigger: "#project-left", start: "top 85%", toggleActions: "play reverse play reverse" }, xPercent: -50, opacity: 0, duration: 0.8, ease: "power3.out" });
                         gsap.from("#project-right", { scrollTrigger: { trigger: "#project-right", start: "top 85%", toggleActions: "play reverse play reverse" }, xPercent: 50, opacity: 0, duration: 0.8, ease: "power3.out" });
                         
-                        // --- NEW: Desktop animation for IT cards ---
                         gsap.from("#it-card-1", { scrollTrigger: { trigger: "#it-card-1", start: "top 85%", toggleActions: "play reverse play reverse" }, xPercent: -50, opacity: 0, duration: 0.8, ease: "power3.out" });
                         gsap.from("#it-card-2", { scrollTrigger: { trigger: "#it-card-2", start: "top 85%", toggleActions: "play reverse play reverse" }, y: 50, opacity: 0, duration: 0.8, ease: "power3.out" });
                         gsap.from("#it-card-3", { scrollTrigger: { trigger: "#it-card-3", start: "top 85%", toggleActions: "play reverse play reverse" }, xPercent: 50, opacity: 0, duration: 0.8, ease: "power3.out" });
@@ -449,7 +456,6 @@
                         gsap.from("#project-left", { scrollTrigger: { trigger: "#project-left", start: "top 90%", toggleActions: "play reverse play reverse" }, x: -100, opacity: 0, duration: 0.8, ease: "power3.out" });
                         gsap.from("#project-right", { scrollTrigger: { trigger: "#project-right", start: "top 90%", toggleActions: "play reverse play reverse" }, x: 100, opacity: 0, duration: 0.8, ease: "power3.out" });
 
-                        // --- NEW: Mobile animation for IT cards ---
                         gsap.from(".card-3d-container", { scrollTrigger: { trigger: "#section3", start: "top 80%", toggleActions: "play reverse play reverse" }, x: -100, opacity: 0, duration: 0.8, stagger: 0.4, ease: "power3.out" });
                     }
                 });
@@ -474,6 +480,77 @@
                 });
             }
         });
+    </script>
+    <!-- --- NEW: Script for particle background --- -->
+    <script>
+        window.onload = function() {
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+
+            var W = window.innerWidth;
+            var H = window.innerHeight;
+            canvas.width = W;
+            canvas.height = H;
+
+            // --- FIXED: Reduced particle count ---
+            var mp = 60;
+            var particles = [];
+            for (var i = 0; i < mp; i++) {
+                particles.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    r: Math.random() * 4 + 1,
+                    d: Math.random() * mp
+                })
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
+
+                ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+                ctx.beginPath();
+                for (var i = 0; i < mp; i++) {
+                    var p = particles[i];
+                    ctx.moveTo(p.x, p.y);
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+                }
+                ctx.fill();
+                update();
+            }
+
+            function update() {
+                for (var i = 0; i < mp; i++) {
+                    var p = particles[i];
+                    // --- FIXED: Reduced particle speed ---
+                    p.y += (Math.cos(p.d) + 1 + p.r / 2) * 0.4;
+                    p.x += Math.sin(i) * 0.5;
+
+                    if (p.x > W + 5 || p.x < -5 || p.y > H) {
+                        particles[i] = {
+                            x: Math.random() * W,
+                            y: -10,
+                            r: p.r,
+                            d: p.d
+                        };
+                    }
+                }
+            }
+            
+            var animationFrame;
+            function animate() {
+                draw();
+                animationFrame = requestAnimationFrame(animate);
+            }
+            
+            window.addEventListener('resize', function() {
+                W = window.innerWidth;
+                H = window.innerHeight;
+                canvas.width = W;
+                canvas.height = H;
+            });
+
+            animate();
+        };
     </script>
 </body>
 </html>
