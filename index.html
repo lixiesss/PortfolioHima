@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Portfolio with Parallax</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP Core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- GSAP ScrollTrigger Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -62,7 +64,6 @@
         }
 
         #section2 {
-            /* --- FIXED: Further reduced padding for mobile --- */
             padding-top: 2rem;
             padding-bottom: 4rem;
             min-height: auto;
@@ -136,6 +137,7 @@
     </style>
 </head>
 <body class="relative">
+    <!-- First Section with GSAP Animation and Spline Robot -->
     <section id="section1" class="relative overflow-hidden">
         
         <div class="container mx-auto z-10 relative">
@@ -148,10 +150,10 @@
                     <p id="tagline" class="text-xl text-gray-300 mb-8">This is my Creative & Information System Portfolio</p>
                     <div class="flex space-x-4">
                         <a href="#section2" class="animated-underline px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-medium transition-all duration-300">
-                            View Work
+                            My creative side
                         </a>
                         <a href="#" class="animated-underline px-6 py-3 border border-white/30 hover:border-blue-400 rounded-full font-medium transition-all duration-300">
-                            Contact Me
+                            My IT side
                         </a>
                     </div>
                 </div>
@@ -169,14 +171,24 @@
         </div>
     </section>
     
+    <!-- Second Section with YouTube Videos -->
     <section id="section2">
         <div class="container mx-auto px-6">
-            <h2 id="projects-title" class="text-4xl md:text-5xl font-bold text-center mb-16 glow"></h2>
+            <h2 id="projects-title" class="text-4xl md:text-5xl font-bold text-center mb-8 glow"></h2>
             
+            <div class="text-center mb-16">
+                <a href="https://www.canva.com/design/DAGsZ7slEUI/xAsG9bxYbuy5VGoMm-schA/edit?utm_content=DAGsZ7slEUI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-medium text-lg hover:opacity-90 transition-opacity">
+                    View Canva Portfolio
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                </a>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 projects-grid">
                 <div id="project-left" class="project-card group">
                     <div class="video-container rounded-xl overflow-hidden shadow-2xl transform group-hover:scale-[1.02] transition-transform duration-300">
-                        <iframe id="video1" src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe id="video1" src="https://www.youtube.com/embed/IppLJdvUvxE?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <h3 class="text-2xl font-semibold mt-6 mb-2">Project Showcase</h3>
                     <p class="text-gray-400">A demonstration of my latest web development project with interactive elements.</p>
@@ -191,14 +203,6 @@
                 </div>
             </div>
             
-            <div class="text-center mt-20">
-                <a href="https://www.canva.com/design/DAGsZ7slEUI/xAsG9bxYbuy5VGoMm-schA/edit?utm_content=DAGsZ7slEUI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-medium text-lg hover:opacity-90 transition-opacity">
-                    View Canva Portfolio
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
-                </a>
-            </div>
         </div>
     </section>
 
