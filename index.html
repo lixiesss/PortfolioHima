@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Portfolio with Parallax</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- GSAP Core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <!-- GSAP ScrollTrigger Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -64,7 +62,8 @@
         }
 
         #section2 {
-            padding-top: 4rem;
+            /* --- FIXED: Further reduced padding for mobile --- */
+            padding-top: 2rem;
             padding-bottom: 4rem;
             min-height: auto;
         }
@@ -137,12 +136,11 @@
     </style>
 </head>
 <body class="relative">
-    <!-- First Section with GSAP Animation and Spline Robot -->
     <section id="section1" class="relative overflow-hidden">
         
-        <div class="container mx-auto px-6 z-10 relative">
-            <div id="hero-layout" class="flex flex-col lg:flex-row items-center justify-between lg:min-h-screen py-10 lg:py-20">
-                <div class="w-full lg:w-1/2 mb-16 lg:mb-0 hero-content opacity-0">
+        <div class="container mx-auto z-10 relative">
+            <div id="hero-layout" class="flex flex-col lg:flex-row items-center lg:justify-between lg:min-h-screen pt-10 pb-0 lg:py-20">
+                <div class="w-full lg:w-1/2 mb-4 lg:mb-0 hero-content opacity-0 px-6 lg:px-0">
                     <h1 class="hero-text font-bold mb-6">
                         <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Hello, I'm</span>
                         <span id="name" class="block text-white"></span>
@@ -171,7 +169,6 @@
         </div>
     </section>
     
-    <!-- Second Section with YouTube Videos -->
     <section id="section2">
         <div class="container mx-auto px-6">
             <h2 id="projects-title" class="text-4xl md:text-5xl font-bold text-center mb-16 glow"></h2>
@@ -285,6 +282,9 @@
                         "(max-width: 1023px)": function() {
                             gsap.set('.hero-content', { opacity: 1 });
                             initializeMainAnimations();
+                            gsap.delayedCall(0.1, () => {
+                                window.scrollTo(0, 0);
+                            });
                         }
                     });
                 })
@@ -303,10 +303,8 @@
                     yPercent: -30,
                 });
 
-                // --- FIXED: Responsive parallax for the robot ---
                 ScrollTrigger.matchMedia({
                     "(min-width: 1024px)": function() {
-                        // Desktop: keeps the strong parallax effect
                         gsap.to(".spline-container", {
                             scrollTrigger: {
                                 trigger: "#section1",
@@ -317,14 +315,13 @@
                         });
                     },
                     "(max-width: 1023px)": function() {
-                        // Mobile: very subtle parallax effect
                         gsap.to(".spline-container", {
                             scrollTrigger: {
                                 trigger: "#section1",
                                 start: "top top",
                                 scrub: 1.2,
                             },
-                            yPercent: -15, // Reduced from -50 to -15
+                            yPercent: -15,
                         });
                     }
                 });
@@ -383,16 +380,26 @@
                         });
                     },
                     "(max-width: 1023px)": function() {
-                        gsap.from(".project-card", {
+                        gsap.from("#project-left", {
                             scrollTrigger: {
-                                trigger: ".projects-grid",
-                                start: "top 80%",
+                                trigger: "#project-left",
+                                start: "top 90%",
                                 toggleActions: "play reverse play reverse"
                             },
                             x: -100,
                             opacity: 0,
                             duration: 0.8,
-                            stagger: 0.4,
+                            ease: "power3.out"
+                        });
+                        gsap.from("#project-right", {
+                            scrollTrigger: {
+                                trigger: "#project-right",
+                                start: "top 90%",
+                                toggleActions: "play reverse play reverse"
+                            },
+                            x: 100,
+                            opacity: 0,
+                            duration: 0.8,
                             ease: "power3.out"
                         });
                     }
