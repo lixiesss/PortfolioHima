@@ -127,13 +127,13 @@
     <section id="section1" class="relative overflow-hidden">
         
         <div class="container mx-auto px-6 z-10 relative">
-            <div class="flex flex-col lg:flex-row items-center justify-between min-h-screen py-20">
-                <div class="w-full lg:w-1/2 mb-16 lg:mb-0 hero-content">
+            <div id="hero-layout" class="flex flex-col lg:flex-row items-center justify-between min-h-screen py-20">
+                <div class="w-full lg:w-1/2 mb-16 lg:mb-0 hero-content opacity-0">
                     <h1 class="hero-text font-bold mb-6">
                         <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Hello, I'm</span>
                         <span id="name" class="block text-white"></span>
                     </h1>
-                    <p id="tagline" class="text-xl text-gray-300 mb-8 opacity-0">This is my Creative & Information System Portfolio</p>
+                    <p id="tagline" class="text-xl text-gray-300 mb-8">This is my Creative & Information System Portfolio</p>
                     <div class="flex space-x-4">
                         <a href="#section2" class="animated-underline px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-medium transition-all duration-300">
                             View Work
@@ -149,7 +149,7 @@
                 </div>
             </div>
             
-            <div class="scroll-indicator hidden lg:block">
+            <div class="scroll-indicator hidden lg:block opacity-0">
                 <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                 </svg>
@@ -195,52 +195,94 @@
         import { Application } from 'https://unpkg.com/@splinetool/runtime@1.0.94/build/runtime.js';
 
         document.addEventListener('DOMContentLoaded', () => {
-            
+            gsap.registerPlugin(ScrollTrigger);
+
             const canvas = document.getElementById('canvas3d');
             const app = new Application(canvas);
+            
+            // --- FIXED: New, more comprehensive text animation ---
+            function initializeMainAnimations() {
+                const tl = gsap.timeline();
+                // Target the h1's first span, the name container, the tagline, and the button container
+                tl.from(".hero-content > h1 > span:first-of-type", { autoAlpha: 0, y: 20, duration: 0.6, ease: 'power2.out' })
+                  .from(".hero-content #name", { 
+                      autoAlpha: 0, 
+                      y: 20, 
+                      duration: 0.6, 
+                      ease: 'power2.out',
+                      onComplete: () => { // Start typewriter after it appears
+                          const name = "Daoshen Justin Felix Okawida";
+                          const nameElement = document.getElementById("name");
+                          let i = 0;
+                          nameElement.textContent = "";
+                          function typeWriter() {
+                              if (i < name.length) {
+                                  nameElement.textContent += name.charAt(i);
+                                  i++;
+                                  setTimeout(typeWriter, 100);
+                              }
+                          }
+                          typeWriter();
+                      }
+                  }, "-=0.4")
+                  .from(".hero-content #tagline", { autoAlpha: 0, y: 20, duration: 0.6, ease: 'power2.out' }, "-=0.4")
+                  .from(".hero-content .flex", { autoAlpha: 0, y: 20, duration: 0.6, ease: 'power2.out' }, "-=0.4");
+
+                setupScrollAnimations();
+            }
+
             app.load('https://prod.spline.design/83A6pFlYKdgM6EIo/scene.splinecode')
                 .then(() => {
                     console.log('Spline scene loaded successfully.');
-                    setupAnimations();
+
+                    ScrollTrigger.matchMedia({
+                        "(min-width: 1024px)": function() {
+                            const heroLayout = document.getElementById('hero-layout');
+                            const splineContainer = document.querySelector('.spline-container');
+                            const heroContent = document.querySelector('.hero-content');
+                            
+                            gsap.set("body", { overflowY: "hidden" });
+                            gsap.set(splineContainer, { position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh', zIndex: 50 });
+                            gsap.set(heroContent, { opacity: 0 }); // Start with text invisible
+                            gsap.set(heroLayout, { justifyContent: 'center' });
+
+                            const introTl = gsap.timeline({
+                                onComplete: () => {
+                                    gsap.set(splineContainer, { clearProps: "all" });
+                                    gsap.set(heroLayout, { clearProps: "justifyContent" });
+                                    gsap.set("body", { clearProps: "overflowY" });
+                                    
+                                    window.scrollTo(0, 0);
+
+                                    // --- FIXED: Animate hero content into view AFTER intro is done ---
+                                    gsap.to(heroContent, { opacity: 1, duration: 0.5 });
+                                    initializeMainAnimations();
+                                    gsap.to('.scroll-indicator', { opacity: 1, duration: 1 });
+                                }
+                            });
+
+                            introTl
+                                .to({}, { duration: 2 }) // Wait 2 seconds
+                                .to(splineContainer, {
+                                    width: '50%',
+                                    left: '50%',
+                                    duration: 1.5,
+                                    ease: 'power3.inOut'
+                                });
+                        },
+
+                        "(max-width: 1023px)": function() {
+                            gsap.set('.hero-content', { opacity: 1 });
+                            initializeMainAnimations();
+                        }
+                    });
                 })
                 .catch((error) => {
                     console.error('Error loading Spline scene:', error);
                 });
 
-            function setupAnimations() {
-                gsap.registerPlugin(ScrollTrigger);
 
-                // --- Initial text animations ---
-                gsap.from("#name", {
-                    duration: 1.1,
-                    opacity: 0,
-                    y: 70,
-                    ease: "power3.out",
-                    onComplete: () => {
-                        const name = "Daoshen Justin Felix Okawida";
-                        const nameElement = document.getElementById("name");
-                        let i = 0;
-                        nameElement.textContent = "";
-                        function typeWriter() {
-                            if (i < name.length) {
-                                nameElement.textContent += name.charAt(i);
-                                i++;
-                                setTimeout(typeWriter, 100);
-                            }
-                        }
-                        typeWriter();
-                    }
-                });
-                
-                gsap.to("#tagline", {
-                    duration: 1,
-                    opacity: 1,
-                    delay: 2.5,
-                    y: -20,
-                    ease: "back.out(1.7)"
-                });
-
-                // --- PARALLAX EFFECT SECTION 1 ---
+            function setupScrollAnimations() {
                 gsap.to(".hero-content", {
                     scrollTrigger: {
                         trigger: "#section1",
@@ -251,18 +293,15 @@
                     opacity: 0.5,
                 });
 
-                // --- FIXED: Parallax for spline container now moves UP ---
                 gsap.to(".spline-container", {
                     scrollTrigger: {
                         trigger: "#section1",
                         start: "top top",
                         scrub: 1.2,
                     },
-                    yPercent: -50, // Moves up on scroll
+                    yPercent: -50,
                 });
                 
-
-                // --- TYPEWRITER ANIMATION FOR PROJECTS TITLE ---
                 const titleEl = document.getElementById('projects-title');
                 const originalText = "My Featured Projects";
                 const cursor = '<span class="typewriter-cursor"></span>';
@@ -287,9 +326,7 @@
                     }
                 });
 
-                // --- RESPONSIVE SLIDE-IN ANIMATIONS FOR PROJECTS ---
                 ScrollTrigger.matchMedia({
-                    // Desktop view
                     "(min-width: 1024px)": function() {
                         gsap.from("#project-left", {
                             scrollTrigger: {
@@ -315,8 +352,6 @@
                             ease: "power3.out"
                         });
                     },
-
-                    // Mobile view
                     "(max-width: 1023px)": function() {
                         gsap.from(".project-card", {
                             scrollTrigger: {
@@ -324,10 +359,10 @@
                                 start: "top 80%",
                                 toggleActions: "play none none none"
                             },
-                            x: -100, // Slide in from left
+                            x: -100,
                             opacity: 0,
                             duration: 0.8,
-                            stagger: 0.4, // Animate one after another
+                            stagger: 0.4,
                             ease: "power3.out"
                         });
                     }
