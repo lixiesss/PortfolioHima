@@ -49,7 +49,7 @@
             height: 100%;
         }
         
-        #section1 {
+        #section1, #section2, #section3 {
             width: 100%;
             display: flex;
             align-items: center;
@@ -58,19 +58,19 @@
         }
 
         @media (min-width: 1024px) {
-            #section1 {
+            #section1, #section3 {
                 min-height: 100vh;
             }
         }
 
-        #section2 {
+        #section2, #section3 {
             padding-top: 2rem;
             padding-bottom: 4rem;
             min-height: auto;
         }
 
         @media (min-width: 1024px) {
-            #section2 {
+            #section2, #section3 {
                 padding-top: 10rem;
                 padding-bottom: 10rem;
                 min-height: 100vh;
@@ -134,6 +134,22 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
+
+        .card-3d-container {
+            perspective: 1000px;
+        }
+        .card-3d {
+            transition: transform 0.1s ease;
+            transform-style: preserve-3d;
+        }
+        /* --- NEW: Card Glow Style --- */
+        .card-glow {
+            box-shadow: 0 0 20px rgba(165, 180, 252, 0.3);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .card-glow:hover {
+            box-shadow: 0 0 35px rgba(199, 210, 254, 0.5);
+        }
     </style>
 </head>
 <body class="relative">
@@ -152,7 +168,7 @@
                         <a href="#section2" class="animated-underline px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-medium transition-all duration-300">
                             My creative side
                         </a>
-                        <a href="#" class="animated-underline px-6 py-3 border border-white/30 hover:border-blue-400 rounded-full font-medium transition-all duration-300">
+                        <a href="#section3" class="animated-underline px-6 py-3 border border-white/30 hover:border-blue-400 rounded-full font-medium transition-all duration-300">
                             My IT side
                         </a>
                     </div>
@@ -203,6 +219,40 @@
                 </div>
             </div>
             
+        </div>
+    </section>
+
+    <!-- Section 3 for IT Side -->
+    <section id="section3">
+        <div class="container mx-auto px-6">
+            <h2 id="it-title" class="text-4xl md:text-5xl font-bold text-center mb-16 glow"></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                <!-- Card 1 -->
+                <div id="it-card-1" class="card-3d-container">
+                    <!-- --- FIXED: Replaced shadow-2xl with card-glow --- -->
+                    <div class="card-3d bg-white/10 p-6 rounded-2xl card-glow backdrop-blur-lg border border-white/20">
+                        <img src="https://placehold.co/600x400/1e3a8a/ffffff?text=Feature+1" alt="Feature 1 Screenshot" class="rounded-lg mb-4 w-full h-auto">
+                        <h3 class="text-2xl font-semibold mb-2">Dashboard Analytics</h3>
+                        <p class="text-gray-300">Developed a real-time data visualization dashboard using Chart.js and WebSocket for live updates.</p>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div id="it-card-2" class="card-3d-container">
+                    <div class="card-3d bg-white/10 p-6 rounded-2xl card-glow backdrop-blur-lg border border-white/20">
+                        <img src="https://placehold.co/600x400/4c1d95/ffffff?text=Feature+2" alt="Feature 2 Screenshot" class="rounded-lg mb-4 w-full h-auto">
+                        <h3 class="text-2xl font-semibold mb-2">User Authentication System</h3>
+                        <p class="text-gray-300">Implemented a secure user login and registration system with JWT-based authentication and password hashing.</p>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div id="it-card-3" class="card-3d-container">
+                    <div class="card-3d bg-white/10 p-6 rounded-2xl card-glow backdrop-blur-lg border border-white/20">
+                        <img src="https://placehold.co/600x400/3b82f6/ffffff?text=Feature+3" alt="Feature 3 Screenshot" class="rounded-lg mb-4 w-full h-auto">
+                        <h3 class="text-2xl font-semibold mb-2">E-commerce Checkout Flow</h3>
+                        <p class="text-gray-300">Designed and built a multi-step checkout process with payment gateway integration using Stripe API.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -330,83 +380,97 @@
                     }
                 });
                 
-                const titleEl = document.getElementById('projects-title');
-                const originalText = "My Featured Projects";
+                // Typewriter for "My Featured Projects"
+                const projectsTitleEl = document.getElementById('projects-title');
+                const projectsOriginalText = "My Featured Projects";
                 const cursor = '<span class="typewriter-cursor"></span>';
-                titleEl.innerHTML = cursor; 
+                projectsTitleEl.innerHTML = cursor; 
 
                 ScrollTrigger.create({
-                    trigger: titleEl,
+                    trigger: projectsTitleEl,
                     start: "top 80%",
                     toggleActions: "play reverse play reverse", 
                     onEnter: () => {
                         let i = 0;
-                        titleEl.innerHTML = ""; 
+                        projectsTitleEl.innerHTML = ""; 
                         const interval = setInterval(() => {
-                            if (i < originalText.length) {
-                                titleEl.innerHTML = originalText.substring(0, i + 1) + cursor;
+                            if (i < projectsOriginalText.length) {
+                                projectsTitleEl.innerHTML = projectsOriginalText.substring(0, i + 1) + cursor;
                                 i++;
                             } else {
                                 clearInterval(interval);
-                                titleEl.innerHTML = originalText + cursor;
+                                projectsTitleEl.innerHTML = projectsOriginalText + cursor;
                             }
                         }, 80); 
                     },
                     onLeaveBack: () => {
-                        titleEl.innerHTML = cursor;
+                        projectsTitleEl.innerHTML = cursor;
+                    }
+                });
+                
+                // --- NEW: Typewriter for "My IT Side" ---
+                const itTitleEl = document.getElementById('it-title');
+                const itOriginalText = "My IT Side";
+                itTitleEl.innerHTML = cursor; 
+
+                ScrollTrigger.create({
+                    trigger: itTitleEl,
+                    start: "top 80%",
+                    toggleActions: "play reverse play reverse", 
+                    onEnter: () => {
+                        let i = 0;
+                        itTitleEl.innerHTML = ""; 
+                        const interval = setInterval(() => {
+                            if (i < itOriginalText.length) {
+                                itTitleEl.innerHTML = itOriginalText.substring(0, i + 1) + cursor;
+                                i++;
+                            } else {
+                                clearInterval(interval);
+                                itTitleEl.innerHTML = itOriginalText + cursor;
+                            }
+                        }, 80); 
+                    },
+                    onLeaveBack: () => {
+                        itTitleEl.innerHTML = cursor;
                     }
                 });
 
                 ScrollTrigger.matchMedia({
                     "(min-width: 1024px)": function() {
-                        gsap.from("#project-left", {
-                            scrollTrigger: {
-                                trigger: "#project-left",
-                                start: "top 85%",
-                                toggleActions: "play reverse play reverse"
-                            },
-                            xPercent: -50,
-                            opacity: 0,
-                            duration: 0.8,
-                            ease: "power3.out"
-                        });
-
-                        gsap.from("#project-right", {
-                            scrollTrigger: {
-                                trigger: "#project-right",
-                                start: "top 85%",
-                                toggleActions: "play reverse play reverse"
-                            },
-                            xPercent: 50,
-                            opacity: 0,
-                            duration: 0.8,
-                            ease: "power3.out"
-                        });
+                        gsap.from("#project-left", { scrollTrigger: { trigger: "#project-left", start: "top 85%", toggleActions: "play reverse play reverse" }, xPercent: -50, opacity: 0, duration: 0.8, ease: "power3.out" });
+                        gsap.from("#project-right", { scrollTrigger: { trigger: "#project-right", start: "top 85%", toggleActions: "play reverse play reverse" }, xPercent: 50, opacity: 0, duration: 0.8, ease: "power3.out" });
+                        
+                        // --- NEW: Desktop animation for IT cards ---
+                        gsap.from("#it-card-1", { scrollTrigger: { trigger: "#it-card-1", start: "top 85%", toggleActions: "play reverse play reverse" }, xPercent: -50, opacity: 0, duration: 0.8, ease: "power3.out" });
+                        gsap.from("#it-card-2", { scrollTrigger: { trigger: "#it-card-2", start: "top 85%", toggleActions: "play reverse play reverse" }, y: 50, opacity: 0, duration: 0.8, ease: "power3.out" });
+                        gsap.from("#it-card-3", { scrollTrigger: { trigger: "#it-card-3", start: "top 85%", toggleActions: "play reverse play reverse" }, xPercent: 50, opacity: 0, duration: 0.8, ease: "power3.out" });
                     },
                     "(max-width: 1023px)": function() {
-                        gsap.from("#project-left", {
-                            scrollTrigger: {
-                                trigger: "#project-left",
-                                start: "top 90%",
-                                toggleActions: "play reverse play reverse"
-                            },
-                            x: -100,
-                            opacity: 0,
-                            duration: 0.8,
-                            ease: "power3.out"
-                        });
-                        gsap.from("#project-right", {
-                            scrollTrigger: {
-                                trigger: "#project-right",
-                                start: "top 90%",
-                                toggleActions: "play reverse play reverse"
-                            },
-                            x: 100,
-                            opacity: 0,
-                            duration: 0.8,
-                            ease: "power3.out"
-                        });
+                        gsap.from("#project-left", { scrollTrigger: { trigger: "#project-left", start: "top 90%", toggleActions: "play reverse play reverse" }, x: -100, opacity: 0, duration: 0.8, ease: "power3.out" });
+                        gsap.from("#project-right", { scrollTrigger: { trigger: "#project-right", start: "top 90%", toggleActions: "play reverse play reverse" }, x: 100, opacity: 0, duration: 0.8, ease: "power3.out" });
+
+                        // --- NEW: Mobile animation for IT cards ---
+                        gsap.from(".card-3d-container", { scrollTrigger: { trigger: "#section3", start: "top 80%", toggleActions: "play reverse play reverse" }, x: -100, opacity: 0, duration: 0.8, stagger: 0.4, ease: "power3.out" });
                     }
+                });
+
+                const cards = document.querySelectorAll('.card-3d');
+                cards.forEach(card => {
+                    card.addEventListener('mousemove', (e) => {
+                        const { clientX, clientY } = e;
+                        const { left, top, width, height } = card.getBoundingClientRect();
+                        const x = clientX - left;
+                        const y = clientY - top;
+                        
+                        const rotateX = gsap.utils.mapRange(0, height, -10, 10, y);
+                        const rotateY = gsap.utils.mapRange(0, width, 10, -10, x);
+                        
+                        gsap.to(card, { duration: 0.5, rotateX: rotateX, rotateY: rotateY, ease: "power2.out" });
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        gsap.to(card, { duration: 0.5, rotateX: 0, rotateY: 0, ease: "power2.out" });
+                    });
                 });
             }
         });
