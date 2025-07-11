@@ -29,26 +29,33 @@
             z-index: -1;
         }
         
-        /* --- FIXED: Hide Default Scrollbar on both html and body --- */
-        html::-webkit-scrollbar,
-        body::-webkit-scrollbar {
-            display: none;
-        }
-        html, body {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+        @media (min-width: 1024px) {
+            html::-webkit-scrollbar,
+            body::-webkit-scrollbar {
+                display: none;
+            }
+            html, body {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
         }
 
         #scrollbar-track {
-            position: fixed;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 2px;
-            height: 25vh;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            z-index: 1000;
+            display: none;
+        }
+        @media (min-width: 1024px) {
+            #scrollbar-track {
+                display: block;
+                position: fixed;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 2px;
+                height: 25vh;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 2px;
+                z-index: 1000;
+            }
         }
 
         #scrollbar-thumb {
@@ -76,7 +83,7 @@
         
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
         }
@@ -612,24 +619,59 @@
             const html = document.documentElement;
 
             function updateThumb() {
+                // --- FIXED: Let CSS handle visibility ---
                 const scrollableHeight = html.scrollHeight - html.clientHeight;
-                if (scrollableHeight <= 0) {
-                    track.style.display = 'none';
-                    return;
-                }
-                track.style.display = 'block';
+                if (scrollableHeight <= 0) return;
 
                 const progress = window.scrollY / scrollableHeight;
                 const thumbHeight = thumb.offsetHeight;
                 const trackHeight = track.clientHeight;
                 const thumbPosition = progress * (trackHeight - thumbHeight);
                 
-                thumb.style.top = `${thumbPosition}px`;
+                gsap.to(thumb, { top: thumbPosition, duration: 0.1 });
             }
 
             window.addEventListener('scroll', updateThumb);
             window.addEventListener('resize', updateThumb);
-            updateThumb(); // Initial call
+            updateThumb();
+
+            // --- FIXED: Draggable Scrollbar Logic ---
+            let isDragging = false;
+            let startY;
+            let startScrollTop;
+
+            thumb.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                startY = e.clientY;
+                startScrollTop = window.scrollY;
+                document.body.style.cursor = 'grabbing';
+                document.body.style.userSelect = 'none';
+            });
+
+            window.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+
+                const deltaY = e.clientY - startY;
+                const trackHeight = track.clientHeight;
+                const thumbHeight = thumb.offsetHeight;
+                const scrollableTrackHeight = trackHeight - thumbHeight;
+                
+                if (scrollableTrackHeight <= 0) return;
+
+                const scrollablePageHeight = html.scrollHeight - html.clientHeight;
+                const scrollRatio = scrollablePageHeight / scrollableTrackHeight;
+
+                const newScrollTop = startScrollTop + (deltaY * scrollRatio);
+                
+                window.scrollTo(0, newScrollTop);
+            });
+
+            window.addEventListener('mouseup', function() {
+                isDragging = false;
+                document.body.style.cursor = 'default';
+                document.body.style.userSelect = '';
+            });
         };
     </script>
 </body>
