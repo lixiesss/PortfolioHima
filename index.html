@@ -15,7 +15,6 @@
         
         body {
             font-family: 'Poppins', sans-serif;
-            /* --- FIXED: scroll-behavior removed to allow GSAP to control it --- */
             overflow-x: hidden;
             color: white;
             background-color: #0a0a0a;
@@ -30,6 +29,40 @@
             z-index: -1;
         }
         
+        /* --- FIXED: Hide Default Scrollbar on both html and body --- */
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        html, body {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        #scrollbar-track {
+            position: fixed;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 25vh;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            z-index: 1000;
+        }
+
+        #scrollbar-thumb {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 40px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 0 10px white, 0 0 20px white;
+            cursor: pointer;
+        }
+
         .hero-text {
             font-size: clamp(2rem, 8vw, 6rem);
             line-height: 1;
@@ -168,6 +201,7 @@
 </head>
 <body class="relative">
     <canvas id="canvas"></canvas>
+    <div id="scrollbar-track"><div id="scrollbar-thumb"></div></div>
 
     <!-- First Section with GSAP Animation and Spline Robot -->
     <section id="section1" class="relative overflow-hidden">
@@ -374,7 +408,6 @@
                                 duration: 1.5,
                                 scrollTo: {
                                     y: targetElement,
-                                    // --- FIXED: Negative offset to scroll further down on desktop ---
                                     offsetY: -80 
                                 },
                                 ease: "power2.inOut"
@@ -572,6 +605,31 @@
             });
 
             animate();
+
+            const track = document.getElementById('scrollbar-track');
+            const thumb = document.getElementById('scrollbar-thumb');
+            const body = document.body;
+            const html = document.documentElement;
+
+            function updateThumb() {
+                const scrollableHeight = html.scrollHeight - html.clientHeight;
+                if (scrollableHeight <= 0) {
+                    track.style.display = 'none';
+                    return;
+                }
+                track.style.display = 'block';
+
+                const progress = window.scrollY / scrollableHeight;
+                const thumbHeight = thumb.offsetHeight;
+                const trackHeight = track.clientHeight;
+                const thumbPosition = progress * (trackHeight - thumbHeight);
+                
+                thumb.style.top = `${thumbPosition}px`;
+            }
+
+            window.addEventListener('scroll', updateThumb);
+            window.addEventListener('resize', updateThumb);
+            updateThumb(); // Initial call
         };
     </script>
 </body>
