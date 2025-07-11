@@ -17,11 +17,9 @@
             scroll-behavior: smooth;
             overflow-x: hidden;
             color: white;
-            /* --- FIXED: Changed background to solid color for canvas --- */
             background-color: #0a0a0a;
         }
 
-        /* --- NEW: Style for the canvas background --- */
         #canvas {
             position: fixed;
             top: 0;
@@ -160,7 +158,6 @@
     </style>
 </head>
 <body class="relative">
-    <!-- --- NEW: Canvas for particle background --- -->
     <canvas id="canvas"></canvas>
 
     <!-- First Section with GSAP Animation and Spline Robot -->
@@ -240,7 +237,8 @@
                 <!-- Card 1 -->
                 <div id="it-card-1" class="card-3d-container">
                     <div class="card-3d bg-white/10 p-6 rounded-2xl card-glow backdrop-blur-lg border border-white/20">
-                        <img src="https://placehold.co/600x400/1e3a8a/ffffff?text=Feature+1" alt="Feature 1 Screenshot" class="rounded-lg mb-4 w-full h-auto">
+                        <!-- --- FIXED: Using local image --- -->
+                        <img src="google_login.png" alt="Google Login Feature" class="rounded-lg mb-4 w-full h-auto">
                         <h3 class="text-2xl font-semibold mb-2">Dashboard Analytics</h3>
                         <p class="text-gray-300">Developed a real-time data visualization dashboard using Chart.js and WebSocket for live updates.</p>
                     </div>
@@ -248,7 +246,8 @@
                 <!-- Card 2 -->
                 <div id="it-card-2" class="card-3d-container">
                     <div class="card-3d bg-white/10 p-6 rounded-2xl card-glow backdrop-blur-lg border border-white/20">
-                        <img src="https://placehold.co/600x400/4c1d95/ffffff?text=Feature+2" alt="Feature 2 Screenshot" class="rounded-lg mb-4 w-full h-auto">
+                        <!-- --- FIXED: Using local image --- -->
+                        <img src="medicine_form.png" alt="Medicine Form Feature" class="rounded-lg mb-4 w-full h-auto">
                         <h3 class="text-2xl font-semibold mb-2">User Authentication System</h3>
                         <p class="text-gray-300">Implemented a secure user login and registration system with JWT-based authentication and password hashing.</p>
                     </div>
@@ -256,7 +255,8 @@
                 <!-- Card 3 -->
                 <div id="it-card-3" class="card-3d-container">
                     <div class="card-3d bg-white/10 p-6 rounded-2xl card-glow backdrop-blur-lg border border-white/20">
-                        <img src="https://placehold.co/600x400/3b82f6/ffffff?text=Feature+3" alt="Feature 3 Screenshot" class="rounded-lg mb-4 w-full h-auto">
+                        <!-- --- FIXED: Using local image --- -->
+                        <img src="partials_background.png" alt="Partials Background Feature" class="rounded-lg mb-4 w-full h-auto">
                         <h3 class="text-2xl font-semibold mb-2">E-commerce Checkout Flow</h3>
                         <p class="text-gray-300">Designed and built a multi-step checkout process with payment gateway integration using Stripe API.</p>
                     </div>
@@ -481,7 +481,6 @@
             }
         });
     </script>
-    <!-- --- NEW: Script for particle background --- -->
     <script>
         window.onload = function() {
             var canvas = document.getElementById('canvas');
@@ -492,7 +491,6 @@
             canvas.width = W;
             canvas.height = H;
 
-            // --- FIXED: Reduced particle count ---
             var mp = 60;
             var particles = [];
             for (var i = 0; i < mp; i++) {
@@ -521,7 +519,6 @@
             function update() {
                 for (var i = 0; i < mp; i++) {
                     var p = particles[i];
-                    // --- FIXED: Reduced particle speed ---
                     p.y += (Math.cos(p.d) + 1 + p.r / 2) * 0.4;
                     p.x += Math.sin(i) * 0.5;
 
